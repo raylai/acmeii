@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -9,40 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/fsnotify/fsnotify"
-	"github.com/hpcloud/tail"
 )
-
-func readUser() <-chan string {
-	c := make(chan string)
-	go func() {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			c <- scanner.Text()
-		}
-		if err := scanner.Err(); err != nil {
-			log.Fatalln(err)
-		}
-	}()
-	return c
-}
-
-func tailFile(file string) <-chan string {
-	c := make(chan string)
-	go func() {
-		t, err := tail.TailFile(file, tail.Config{Follow: true})
-		if err != nil {
-			log.Fatalln(err)
-		}
-		for line := range t.Lines {
-			c <- line.Text
-		}
-		err = t.Wait()
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}()
-	return c
-}
 
 func acmeiiwin(path string, f os.FileInfo, err error) error {
 	if err != nil {
