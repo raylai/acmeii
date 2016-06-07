@@ -55,23 +55,21 @@ func watchDir(dir string) {
 		log.Fatal(err)
 	}
 	defer watcher.Close()
-	go func() {
-		for {
-			select {
-			case event := <-watcher.Events:
-				if event.Name == inFile {
-					// "in" is recreated often (by ii?)
-					continue
-				}
-				win(event.Name, nil, nil)
-			case err := <-watcher.Errors:
-				log.Fatal(err)
-			}
-		}
-	}()
 	err = watcher.Add(dir)
 	if err != nil {
 		log.Fatal(err)
+	}
+	for {
+		select {
+		case event := <-watcher.Events:
+			if event.Name == inFile {
+				// "in" is recreated often (by ii?)
+				continue
+			}
+			win(event.Name, nil, nil)
+		case err := <-watcher.Errors:
+			log.Fatal(err)
+		}
 	}
 }
 
