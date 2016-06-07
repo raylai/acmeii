@@ -10,7 +10,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-func acmeiiwin(path string, f os.FileInfo, err error) error {
+func win(path string, f os.FileInfo, err error) error {
 	if err != nil {
 		return err
 	}
@@ -63,7 +63,7 @@ func watchDir(dir string) {
 					// "in" is recreated often (by ii?)
 					continue
 				}
-				acmeiiwin(event.Name, nil, nil)
+				win(event.Name, nil, nil)
 			case err := <-watcher.Errors:
 				log.Fatal(err)
 			}
@@ -88,7 +88,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := filepath.Walk(dir, acmeiiwin); err != nil {
+	if err := filepath.Walk(dir, win); err != nil {
 		log.Fatal(err)
 	}
 	watchDir(dir)
