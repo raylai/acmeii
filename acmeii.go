@@ -57,6 +57,26 @@ func acmeiiwin(path string, f os.FileInfo, err error) error {
 	if !f.Mode().IsDir() {
 		return nil
 	}
+	d, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	// Make sure this is the right kind of directory
+	hasIn, hasOut := false, false
+	names, err := d.Readdirnames(0)
+	if err != nil {
+		return err
+	}
+	for _, name := range names {
+		if name == "in" {
+			hasIn = true
+		} else if name == "out" {
+			hasOut = true
+		}
+	}
+	if !(hasIn && hasOut) {
+		return nil
+	}
 	args := fmt.Sprintf("label \"%s\"; exec acmeiiwin \"%s\"", path, path)
 	cmd := exec.Command("win", "sh", "-c", args)
 	return cmd.Start()
