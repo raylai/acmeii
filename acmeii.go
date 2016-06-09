@@ -43,9 +43,7 @@ func win(path string, f os.FileInfo, err error) error {
 	if !(hasIn && hasOut) {
 		return nil
 	}
-	args := fmt.Sprintf("label \"%s\"; exec acmeiiwin \"%s\"", path, path)
-	cmd := exec.Command("win", "sh", "-c", args)
-	return cmd.Start()
+	return exec.Command("win", "acmeiiwin", path).Start()
 }
 
 func watchDir(dir string) {

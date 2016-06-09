@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
+	"strings"
 
 	"github.com/hpcloud/tail"
 )
@@ -47,19 +49,27 @@ func main() {
 		os.Exit(1)
 	}
 	dir := os.Args[1]
+	label := strings.TrimPrefix(dir, os.Getenv("HOME"))
+	err := exec.Command("9", "label", label).Run()
+	if err != nil {
+		log.Println(err)
+	}
 	cchannel := tailFile(fmt.Sprintf("%s/out", dir))
 	cuser := readUser()
-	infile, err := os.OpenFile(fmt.Sprintf("%s/in", dir),
-		os.O_WRONLY, 0600)
-	if err != nil {
-		log.Fatal(err)
-	}
 	for {
 		select {
 		case msg := <-cchannel:
 			fmt.Println(msg)
 		case msg := <-cuser:
-			fmt.Fprintln(infile, msg)
+			go func() {
+				infile, err := os.OpenFile(fmt.Sprintf("%s/in", dir),
+					os.O_WRONLY, 0600)
+				defer infile.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+				fmt.Fprintln(infile, msg)
+			}()
 		}
 	}
 }
