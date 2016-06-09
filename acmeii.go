@@ -46,7 +46,7 @@ func win(path string, f os.FileInfo, err error) error {
 	return exec.Command("win", "acmeiiwin", path).Start()
 }
 
-func watchDir(dir string) {
+func watchDir(dir string, depth int) {
 	inFile := fmt.Sprintf("%s/in", dir)
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -74,6 +74,15 @@ func watchDir(dir string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	if depth > 0 {
+		f, err := os.Stat(dir)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if f.Mode().IsDir() {
+			watchDir(dir, depth-1)
+		}
+	}
 	<-done
 }
 
@@ -93,5 +102,5 @@ func main() {
 	if err := filepath.Walk(dir, win); err != nil {
 		log.Fatal(err)
 	}
-	watchDir(dir)
+	watchDir(dir, 1)
 }
