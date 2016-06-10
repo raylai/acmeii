@@ -30,8 +30,10 @@ opens new windows)
 window; that's one less window to manage
 - Use 9fans.net/go/acme package to manipulate windows rather than
 calling `win`; this will enable more fine-grained controls of
-windows, such as clearing history, `rm`ing channels we don't care
-about anymore, etc.
+windows, such as:
+	- clearing history
+	- `rm`ing channels we don't care about anymore
+	- closing all created windows upon quitting
 - Reconnection?
 - Write man page
 
