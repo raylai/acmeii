@@ -22,7 +22,7 @@ go install github.com/raylai/acmeii/acmeiiwin
 
 ## Todo
 
-- `pledge(2)` for OpenBSD
+- [`pledge(2)`](https://github.com/ylih/extrasys) for OpenBSD
 - Exec `ii` (with `tcpclient` as needed), take same flags as `ii`
 (so calling `ii` and `acmeii` has same semantics, except `acmeii`
 opens new windows)
